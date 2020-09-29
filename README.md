@@ -29,6 +29,7 @@ ReactDOM.render(
     apiKey="fee8af9eac884187960b868dea77f9e9"
     environmentId="d883d84e4efb4a58bcacc7e6200031bd"
     projectId="b0e8b4f74b824f18b6f8914b195d1dcd"
+    name="my-dummy-project"
     overrideConsole={true}
     verbose={true}
   >
@@ -53,9 +54,13 @@ Required. This is the identifier of the environment for which the API key was ge
 
 Required. This is the identifier of the project to which the environment belongs to.
 
+`name: string`
+
+Optional. This name will appear in log messages if provided.
+
 `overrideConsole: boolean`
 
-Optional. Overrides console's info, log, warn and error functions and sends all existing logged statements to the Nautine service. 
+Optional. Overrides console's info, log, warn and error functions and sends all existing logged statements to the Nautine service.
 
 `verbose: boolean`
 

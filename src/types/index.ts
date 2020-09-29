@@ -1,13 +1,5 @@
-// Source: https://shorturl.at/klCTV
-export type LogSeverity =
-    | 'EMERGENCY'
-    | 'ALERT'
-    | 'CRITICAL'
-    | 'ERROR'
-    | 'WARNING'
-    | 'NOTIFICATION'
-    | 'INFORMATIONAL'
-    | 'DEBUGGING'
+// Source: https://www.tutorialspoint.com/log4j/log4j_logging_levels.htm
+export type LogSeverity = 'FATAL' | 'ERROR' | 'WARN' | 'INFO' | 'DEBUG' | 'TRACE'
 
 export interface LogMessage {
     message: any
@@ -20,7 +12,16 @@ export interface Log {
     message: LogMessage
 }
 
+export type LoggerFunction = (log: LogMessage | any) => Promise<void>
+
 export interface NautineContextProps {
-    sendLog: (log: Log) => Promise<void>
+    logger: {
+        fatal: LoggerFunction
+        error: LoggerFunction
+        warn: LoggerFunction
+        info: LoggerFunction
+        debug: LoggerFunction
+        trace: LoggerFunction
+    }
     readonly overrideConsole?: boolean
 }

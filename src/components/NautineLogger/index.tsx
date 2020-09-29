@@ -1,26 +1,27 @@
 import React, { useEffect, useState } from 'react'
 import useFetch, { Provider } from 'use-http'
 import { NautineProvider } from '../../context'
-import { Log, LogSeverity } from '../../types'
+import { LogSeverity } from '../../types'
 
 export interface NautineLoggerProps {
     apiKey: string
     environmentId: string
     projectId: string
+    name?: string
     overrideConsole?: boolean
     verbose?: boolean
 }
 
-export const Nautine: React.FC<NautineLoggerProps> = ({ overrideConsole, ...props }) => {
+export const Nautine: React.FC<NautineLoggerProps> = ({ overrideConsole, name, ...props }) => {
     const [standardLogger] = useState({ ...console })
 
     const { request } = useFetch(`/logs?apiKey=${props.apiKey}`)
 
     useEffect(() => {
         if (overrideConsole) {
-            console.info = customLog('INFORMATIONAL', standardLogger.info)
-            console.log = customLog('DEBUGGING', standardLogger.log)
-            console.warn = customLog('WARNING', standardLogger.warn)
+            console.info = customLog('INFO', standardLogger.info)
+            console.log = customLog('TRACE', standardLogger.log)
+            console.warn = customLog('WARN', standardLogger.warn)
             console.error = customLog('ERROR', standardLogger.error)
         }
 
@@ -41,11 +42,11 @@ export const Nautine: React.FC<NautineLoggerProps> = ({ overrideConsole, ...prop
      */
     const customLog = (severity: LogSeverity, standardLogFunction: Function) => async (...data: Array<any>) => {
         if (props.verbose) {
-            standardLogFunction('[Nautine]', ...data)
+            standardLogFunction(name, ...data)
         }
 
         try {
-            await sendLog({ severity, message: { message: JSON.stringify(data) } }, true)
+            await sendLog(severity)(data, true)
         } catch (error) {
             console.error(error)
         }
@@ -58,15 +59,36 @@ export const Nautine: React.FC<NautineLoggerProps> = ({ overrideConsole, ...prop
      * @param silent - Determines whether console logging should be used or not
      * @returns Promise with the result of log upload
      */
-    const sendLog = async (message: Log, silent?: boolean) => {
+    const sendLog = (severity: LogSeverity) => async (message: any, silent?: boolean) => {
         if (props.verbose && !silent) {
             standardLogger.log('[Nautine]', message)
         }
 
-        return await request.post({ environmentId: props.environmentId, projectId: props.projectId, ...message })
+        return await request.post({
+            environmentId: props.environmentId,
+            projectId: props.projectId,
+            severity,
+            message: { message: JSON.stringify(message) },
+        })
     }
 
-    return <NautineProvider value={{ sendLog, overrideConsole }}>{props.children}</NautineProvider>
+    return (
+        <NautineProvider
+            value={{
+                logger: {
+                    fatal: sendLog('FATAL'),
+                    error: sendLog('ERROR'),
+                    warn: sendLog('WARN'),
+                    info: sendLog('INFO'),
+                    debug: sendLog('DEBUG'),
+                    trace: sendLog('TRACE'),
+                },
+                overrideConsole,
+            }}
+        >
+            {props.children}
+        </NautineProvider>
+    )
 }
 
 export const NautineLogger: React.FC<NautineLoggerProps> = (props) => {
