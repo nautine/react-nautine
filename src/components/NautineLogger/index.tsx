@@ -42,7 +42,9 @@ export const Nautine: React.FC<NautineLoggerProps> = ({ overrideConsole, name, .
      */
     const customLog = (severity: LogSeverity, standardLogFunction: Function) => async (...data: Array<any>) => {
         if (props.verbose) {
-            standardLogFunction(name, ...data)
+            const loggable = [name, ...data].filter((value) => !!value)
+
+            standardLogFunction(...loggable)
         }
 
         try {
@@ -61,7 +63,9 @@ export const Nautine: React.FC<NautineLoggerProps> = ({ overrideConsole, name, .
      */
     const sendLog = (severity: LogSeverity) => async (message: any, silent?: boolean) => {
         if (props.verbose && !silent) {
-            standardLogger.log('[Nautine]', message)
+            const loggable = [name, message].filter((value) => !!value)
+
+            standardLogger.log(...loggable)
         }
 
         return await request.post({

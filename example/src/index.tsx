@@ -15,6 +15,7 @@ const AppWithLogger: React.FC = () => {
             apiKey={apiKey}
             environmentId={environmentId}
             projectId={projectId}
+            name="my-dummy-project"
             overrideConsole={true}
             verbose={true}
         >
