@@ -1,10 +1,8 @@
+import NautineLogger from '@nautine/react-nautine'
 import React from 'react'
 
-import { ExampleComponent } from '@nautine/react-nautine'
-import '@nautine/react-nautine/dist/index.css'
-
-const App = () => {
-  return <ExampleComponent text="Create React Library Example 😄" />
+const App: React.FC = () => {
+    return <NautineLogger>Example Project</NautineLogger>
 }
 
 export default App
