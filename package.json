@@ -2,7 +2,7 @@
     "name": "@nautine/react-nautine",
     "version": "1.0.0",
     "description": "React component for Nautine Logger services.",
-    "author": "szilarddoro",
+    "author": "nautine",
     "license": "MIT",
     "repository": "https://github.com/nautine/react-nautine.git",
     "main": "build/index.js",

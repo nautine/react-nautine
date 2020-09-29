@@ -7,24 +7,51 @@
 ## Install
 
 ```bash
+yarn add @nautine/react-nautine
+```
+
+OR
+
+```bash
 npm install --save @nautine/react-nautine
 ```
 
 ## Usage
 
 ```tsx
-import React, { Component } from 'react'
+import NautineLogger from '@nautine/react-nautine'
+import React from 'react'
+import ReactDOM from 'react-dom'
+import App from './App'
 
-import MyComponent from '@nautine/react-nautine'
-import '@nautine/react-nautine/dist/index.css'
-
-class Example extends Component {
-  render() {
-    return <MyComponent />
-  }
-}
+ReactDOM.render(
+  <NautineLogger
+    apiKey="9a2866ed30f647b4aa7ad638132d7d3a"
+    overrideConsole={true}
+    verbose={true}
+  >
+    <App />
+  </NautineLogger>,
+  document.getElementById('root')
+)
 ```
 
-## License
+## Reference
+---
+### Props
 
-MIT © [szilarddoro](https://github.com/szilarddoro)
+`apiKey: string`
+
+This is the API key which is generated for a specific environment in the Nautine application.
+
+`overrideConsole: boolean`
+
+Overrides console.log and sends all log messages printed with console.log to your Nautine environment.
+
+`verbose: boolean`
+
+Prints log messages to the console as well if it's true. Useful when the application is deployed to test environments.
+
+## License
+---
+MIT © [Nautine](https://github.com/nautine)
