@@ -39,7 +39,6 @@ ReactDOM.render(
 ```
 
 ## Reference
----
 ### Props
 
 `apiKey: string`
@@ -56,12 +55,11 @@ Required. This is the identifier of the project to which the environment belongs
 
 `overrideConsole: boolean`
 
-Optional. Overrides console.log and sends all log messages printed with console.log to your Nautine environment.
+Optional. Overrides console's info, log, warn and error functions and sends all existing logged statements to the Nautine service. 
 
 `verbose: boolean`
 
 Optional. Prints log messages to the console as well if it's true. Useful when the application is deployed to test environments.
 
 ## License
----
 MIT © [Nautine](https://github.com/nautine)
