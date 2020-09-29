@@ -1,3 +1,2 @@
-import { NautineLogger } from './components'
-
-export default NautineLogger
+export { NautineLogger } from './components'
+export { useNautineContext } from './hooks'

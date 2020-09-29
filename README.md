@@ -26,7 +26,9 @@ import App from './App'
 
 ReactDOM.render(
   <NautineLogger
-    apiKey="9a2866ed30f647b4aa7ad638132d7d3a"
+    apiKey="fee8af9eac884187960b868dea77f9e9"
+    environmentId="d883d84e4efb4a58bcacc7e6200031bd"
+    projectId="b0e8b4f74b824f18b6f8914b195d1dcd"
     overrideConsole={true}
     verbose={true}
   >
@@ -42,15 +44,23 @@ ReactDOM.render(
 
 `apiKey: string`
 
-This is the API key which is generated for a specific environment in the Nautine application.
+Required. This is the API key which is generated for a specific environment in the Nautine application.
+
+`environmentId: string`
+
+Required. This is the identifier of the environment for which the API key was generated for.
+
+`projectId: string`
+
+Required. This is the identifier of the project to which the environment belongs to.
 
 `overrideConsole: boolean`
 
-Overrides console.log and sends all log messages printed with console.log to your Nautine environment.
+Optional. Overrides console.log and sends all log messages printed with console.log to your Nautine environment.
 
 `verbose: boolean`
 
-Prints log messages to the console as well if it's true. Useful when the application is deployed to test environments.
+Optional. Prints log messages to the console as well if it's true. Useful when the application is deployed to test environments.
 
 ## License
 ---

@@ -59,5 +59,9 @@
     },
     "files": [
         "build"
-    ]
+    ],
+    "dependencies": {
+        "tiny-warning": "^1.0.3",
+        "use-http": "^1.0.15"
+    }
 }
