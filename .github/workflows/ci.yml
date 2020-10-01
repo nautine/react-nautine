@@ -24,22 +24,12 @@ jobs:
       uses: actions/setup-node@v1
       with:
         node-version: ${{ matrix.node-version }}
-        
+
     - name: Environment Setup
       run: |
         npm install -g yarn
-        yarn global add lerna
-        yarn bootstrap
-           
-    - name: Code Quality
+        yarn install
+
+    - name: Code Quality, Test and Build
       run: |
-        yarn lint
-      
-    - name: Tests
-      run: |
-        yarn build-lib
         yarn test
-      
-    - name: Build
-      run: |
-        yarn build:test
