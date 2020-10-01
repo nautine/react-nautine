@@ -2,7 +2,7 @@
 export type LogSeverity = 'FATAL' | 'ERROR' | 'WARN' | 'INFO' | 'DEBUG' | 'TRACE'
 
 export interface LogMessage {
-    message: any
+    message: unknown
     name?: string
     statusCode?: number
 }
@@ -12,7 +12,7 @@ export interface Log {
     message: LogMessage
 }
 
-export type LoggerFunction = (log: LogMessage | any) => Promise<void>
+export type LoggerFunction = (log: LogMessage | unknown) => Promise<void>
 
 export interface NautineContextProps {
     logger: {

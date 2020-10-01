@@ -6,7 +6,7 @@ import { NautineContextProps } from '../../types'
 /**
  * Hooks into the active Nautine Context.
  */
-export const useNautineContext = () => {
+export const useNautineContext: () => NautineContextProps = () => {
     const nautineContext = useContext<NautineContextProps>(NautineContext)
 
     invariant(

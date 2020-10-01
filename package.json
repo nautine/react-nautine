@@ -25,10 +25,11 @@
         "build": "microbundle-crl --no-compress --format modern,cjs",
         "start": "microbundle-crl watch --no-compress --format modern,cjs",
         "prepare": "run-s test && run-s build",
+        "lint:verbose": "eslint src/**/*.{ts,tsx}",
         "test": "run-s test:unit test:lint test:build",
         "test:build": "run-s build",
-        "test:lint": "eslint ./src/ --no-error-on-unmatched-pattern",
         "test:unit": "cross-env CI=1 react-scripts test --env=jsdom",
+        "test:lint": "yarn lint:verbose --quiet",
         "test:watch": "react-scripts test --env=jsdom",
         "predeploy": "cd example && yarn install && yarn run build",
         "deploy": "gh-pages -d example/build"
@@ -44,21 +45,22 @@
         "@types/node": "^12.12.38",
         "@types/react": "^16.9.27",
         "@types/react-dom": "^16.9.7",
-        "@typescript-eslint/eslint-plugin": "^2.26.0",
-        "@typescript-eslint/parser": "^2.26.0",
-        "babel-eslint": "^10.0.3",
+        "@typescript-eslint/eslint-plugin": "^4.3.0",
+        "@typescript-eslint/parser": "^4.3.0",
         "cross-env": "^7.0.2",
-        "eslint": "^6.8.0",
-        "eslint-config-prettier": "^6.7.0",
-        "eslint-config-standard": "^14.1.0",
-        "eslint-config-standard-react": "^9.2.0",
-        "eslint-plugin-import": "^2.18.2",
-        "eslint-plugin-node": "^11.0.0",
-        "eslint-plugin-prettier": "^3.1.1",
-        "eslint-plugin-promise": "^4.2.1",
-        "eslint-plugin-react": "^7.17.0",
-        "eslint-plugin-standard": "^4.0.1",
+        "eslint": "7.2.0",
+        "eslint-config-airbnb": "18.2.0",
+        "eslint-config-airbnb-typescript": "^11.0.0",
+        "eslint-config-prettier": "^6.12.0",
+        "eslint-plugin-import": "^2.21.2",
+        "eslint-plugin-jest": "^24.0.2",
+        "eslint-plugin-jsx-a11y": "^6.3.0",
+        "eslint-plugin-prettier": "^3.1.4",
+        "eslint-plugin-react": "^7.20.0",
+        "eslint-plugin-react-hooks": "4.0.0",
         "gh-pages": "^2.2.0",
+        "husky": ">=4",
+        "lint-staged": ">=10",
         "microbundle-crl": "^0.13.10",
         "npm-run-all": "^4.1.5",
         "prettier": "^2.1.2",
@@ -73,5 +75,16 @@
     "dependencies": {
         "tiny-warning": "^1.0.3",
         "use-http": "^1.0.15"
+    },
+    "husky": {
+        "hooks": {
+            "pre-commit": "lint-staged"
+        }
+    },
+    "lint-staged": {
+        "*.{ts,tsx}": [
+            "yarn test:lint --fix",
+            "prettier --write"
+        ]
     }
 }
