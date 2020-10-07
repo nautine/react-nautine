@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import useFetch, { CachePolicies, Provider } from 'use-http'
 import { NautineProvider } from '../../context'
 import { LogSeverity } from '../../types'
+import { getFormattedMessage } from '../../utils'
 import { NautineErrorBoundary } from '../NautineErrorBoundary'
 
 export interface NautineLoggerProps {
@@ -47,7 +48,7 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
                 environmentId,
                 projectId,
                 severity,
-                message: { message: JSON.stringify(message) },
+                message: { message: getFormattedMessage(severity, JSON.stringify(message)) },
             })
         },
         [standardLogger, environmentId, projectId, request, name, verbose],

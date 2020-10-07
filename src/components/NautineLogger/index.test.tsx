@@ -15,7 +15,11 @@ test('should wrap children correctly', () => {
         </div>
     )
 
-    render(<NautineLogger>{children}</NautineLogger>)
+    render(
+        <NautineLogger apiKey="apiKey" environmentId="environmentId" projectId="projectId">
+            {children}
+        </NautineLogger>,
+    )
 
     expect(screen.getByText('Child #1')).toBeInTheDocument()
     expect(screen.getByText('Child #2')).toBeInTheDocument()
