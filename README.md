@@ -23,6 +23,7 @@ import NautineLogger from '@nautine/react-nautine'
 import React from 'react'
 import ReactDOM from 'react-dom'
 import App from './App'
+import MyFallbackComponent from './MyFallbackComponent'
 
 ReactDOM.render(
   <NautineLogger
@@ -32,12 +33,16 @@ ReactDOM.render(
     name="my-dummy-project"
     overrideConsole={true}
     verbose={true}
+    errorFallback={<MyFallbackComponent />}
   >
     <App />
   </NautineLogger>,
   document.getElementById('root')
 )
 ```
+
+## Error boundary
+Nautine Logger uses its own internal Error Boundary component, which makes it really easy to catch any errors that was happening somewhere in the component tree. This component sends log messages to Nautine background services automatically without additional configuration. If you have any custom Error Boundary components defined in your project deep in the tree, the error will not be reported to Nautine unless you create the relevant context function calls on your own.
 
 ## Reference
 ### Props
@@ -65,6 +70,10 @@ Optional. Overrides console's info, log, warn and error functions and sends all 
 `verbose: boolean`
 
 Optional. Prints log messages to the console as well if it's true. Useful when the application is deployed to test environments.
+
+`errorFallback: React.ReactNode`
+
+Optional. Fallback component to render when an error is being caught by the internal Error Boundary.
 
 ## License
 MIT © [Nautine](https://github.com/nautine)

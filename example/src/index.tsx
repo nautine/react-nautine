@@ -18,6 +18,7 @@ const AppWithLogger: React.FC = () => {
             name="my-dummy-project"
             overrideConsole={true}
             verbose={true}
+            errorFallback={<span>Error...</span>}
         >
             <App />
         </NautineLogger>

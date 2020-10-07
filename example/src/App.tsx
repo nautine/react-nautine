@@ -5,7 +5,18 @@ const buttonStyle = {
     maxWidth: 200,
 }
 
+/**
+ * This is a component that cannot be rendered.
+ */
+const FaultyComponent = () => {
+    const items = [{ name: 'Item #1' }, { name: 'Item #2' }]
+
+    // Note: This is going to be a faulty reference because the original array consists of two elements only.
+    return <span>{items[2].name}</span>
+}
+
 const App: React.FC = () => {
+    const [showFaultyComponent, setShowFaultyComponent] = React.useState(false)
     const { logger, overrideConsole } = useNautineContext()
 
     return (
@@ -43,6 +54,16 @@ const App: React.FC = () => {
                     </button>
                 </>
             )}
+
+            <hr />
+
+            <h3>Error boundary</h3>
+
+            <button onClick={() => setShowFaultyComponent(true)} style={buttonStyle}>
+                Trigger error boundary
+            </button>
+
+            {showFaultyComponent && <FaultyComponent />}
         </div>
     )
 }

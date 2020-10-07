@@ -2,6 +2,7 @@ import React, { useCallback, useEffect, useState } from 'react'
 import useFetch, { CachePolicies, Provider } from 'use-http'
 import { NautineProvider } from '../../context'
 import { LogSeverity } from '../../types'
+import { NautineErrorBoundary } from '../NautineErrorBoundary'
 
 export interface NautineLoggerProps {
     apiKey: string
@@ -10,6 +11,7 @@ export interface NautineLoggerProps {
     name?: string
     overrideConsole?: boolean
     verbose?: boolean
+    errorFallback?: React.ReactNode
 }
 
 export const Nautine: React.FC<NautineLoggerProps> = ({
@@ -20,6 +22,7 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
     apiKey,
     verbose,
     children,
+    errorFallback,
 }) => {
     const [standardLogger] = useState({ ...console })
 
@@ -34,7 +37,6 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
      */
     const sendLog = React.useCallback(
         (severity: LogSeverity) => async (message: unknown, silent?: boolean) => {
-            standardLogger.log('new send log')
             if (verbose && !silent) {
                 const loggable = [name, message].filter((value) => !!value)
 
@@ -86,8 +88,7 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
         return () => {
             if (overrideConsole) {
                 // Reset console object to its defaults on unmount
-                // eslint-disable-next-line
-                console = { ...standardLogger }
+                console = { ...standardLogger } // eslint-disable-line
             }
         }
     }, [overrideConsole, customLog, standardLogger])
@@ -106,7 +107,7 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
                 overrideConsole,
             }}
         >
-            {children}
+            <NautineErrorBoundary fallback={errorFallback}>{children}</NautineErrorBoundary>
         </NautineProvider>
     )
 }
