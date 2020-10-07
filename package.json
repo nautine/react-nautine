@@ -82,8 +82,8 @@
         }
     },
     "lint-staged": {
-        "*.{ts,tsx}": [
-            "yarn test:lint --fix",
+        "src/*.{ts,tsx}": [
+            "yarn test:lint",
             "prettier --write"
         ]
     }
