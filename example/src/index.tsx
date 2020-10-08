@@ -18,11 +18,10 @@ const AppWithLogger: React.FC = () => {
             level="TRACE"
             verbose={true}
             errorFallback={(resetBoundary) => (
-                <span>
-                    Error...
-                    <br />
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span>Error...</span>
                     <button onClick={resetBoundary}>Reset</button>
-                </span>
+                </div>
             )}
         >
             <App />

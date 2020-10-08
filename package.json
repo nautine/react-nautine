@@ -26,7 +26,7 @@
         "build": "microbundle-crl --no-compress --format modern,cjs",
         "start": "microbundle-crl watch --no-compress --format modern,cjs",
         "prepare": "run-s test",
-        "lint:verbose": "eslint src/**/*.{ts,tsx} --fix",
+        "lint:verbose": "eslint ./src/**/*.{ts,tsx} --fix",
         "test": "run-s test:unit test:lint test:build",
         "test:build": "run-s build",
         "test:unit": "TZ=UTC cross-env CI=1 react-scripts test --env=jsdom --silent",
