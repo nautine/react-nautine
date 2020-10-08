@@ -1,7 +1,7 @@
-import React, { useCallback, useEffect, useState } from 'react'
-import useFetch, { CachePolicies, Provider } from 'use-http'
+import axios from 'axios'
+import React from 'react'
 import { NautineProvider } from '../../context'
-import { LogSeverity } from '../../types'
+import { LogSeverity, SeverityPriority } from '../../types'
 import { getFormattedMessage } from '../../utils'
 import { NautineErrorBoundary } from '../NautineErrorBoundary'
 
@@ -9,26 +9,20 @@ export interface NautineLoggerProps {
     apiKey: string
     environmentId: string
     projectId: string
-    name?: string
-    overrideConsole?: boolean
+    level?: LogSeverity
     verbose?: boolean
-    errorFallback?: React.ReactNode
+    errorFallback?: React.ReactNode | ((resetBoundary: () => void) => React.ReactNode)
 }
 
-export const Nautine: React.FC<NautineLoggerProps> = ({
+export const NautineLogger: React.FC<NautineLoggerProps> = ({
+    apiKey,
     environmentId,
     projectId,
-    overrideConsole,
-    name,
-    apiKey,
+    level,
     verbose,
     children,
     errorFallback,
 }) => {
-    const [standardLogger] = useState({ ...console })
-
-    const { request } = useFetch(`/logs?apiKey=${apiKey}`)
-
     /**
      * Sends the log to Nautine services and logs it to the console if the setup is verbose.
      *
@@ -36,88 +30,69 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
      * @param silent - Determines whether console logging should be used or not
      * @returns Promise with the result of log upload
      */
-    const sendLog = React.useCallback(
-        (severity: LogSeverity) => async (message: unknown, silent?: boolean) => {
-            if (verbose && !silent) {
-                const loggable = [name, message].filter((value) => !!value)
-
-                standardLogger.log(...loggable)
-            }
-
-            return request.post({
-                environmentId,
-                projectId,
+    const sendLogToNetwork = React.useCallback(
+        (severity: LogSeverity) => async (message: unknown, category?: string, type?: string, silent?: boolean) => {
+            const loggableMessage = getFormattedMessage(
                 severity,
-                message: { message: getFormattedMessage(severity, JSON.stringify(message)) },
-            })
-        },
-        [standardLogger, environmentId, projectId, request, name, verbose],
-    )
+                category,
+                type,
+                typeof message === 'object' ? JSON.stringify(message) : String(message),
+            )
 
-    /**
-     * Custom log function which uses one of the standard logging functions based on the input parameter and also sends
-     * the log to Nautine services.
-     *
-     * @param severity - Default severity for different console log types
-     * @param standardLogFunction - Standard log function to use for console logging
-     */
-    const customLog = useCallback(
-        (severity: LogSeverity, standardLogFunction: (params?: unknown) => void) => async (...data: Array<unknown>) => {
-            if (verbose) {
-                const loggable = [name, ...data].filter((value) => !!value)
+            if (verbose && !silent) {
+                let log
 
-                standardLogFunction(...loggable)
+                switch (severity) {
+                    case 'FATAL':
+                    case 'ERROR':
+                        log = console.error
+                        break
+                    case 'WARN':
+                        log = console.warn
+                        break
+                    case 'TRACE':
+                        log = console.log
+                        break
+                    default:
+                        log = console.info
+                }
+
+                if (level && SeverityPriority[level] <= SeverityPriority[severity] && log) {
+                    log(loggableMessage)
+                }
             }
 
             try {
-                await sendLog(severity)(data, true)
+                return axios.post(`http://localhost:8080/api/logs?apiKey=${apiKey}`, {
+                    environmentId,
+                    projectId,
+                    severity,
+                    message: {
+                        message: loggableMessage,
+                    },
+                })
             } catch (error) {
-                console.error(error)
+                return Promise.reject(error)
             }
         },
-        [verbose, name, sendLog],
+        [environmentId, projectId, apiKey, verbose, level],
     )
-
-    useEffect(() => {
-        if (overrideConsole) {
-            console.info = customLog('INFO', standardLogger.info)
-            console.log = customLog('TRACE', standardLogger.log)
-            console.warn = customLog('WARN', standardLogger.warn)
-            console.error = customLog('ERROR', standardLogger.error)
-        }
-
-        return () => {
-            if (overrideConsole) {
-                // Reset console object to its defaults on unmount
-                console = { ...standardLogger } // eslint-disable-line
-            }
-        }
-    }, [overrideConsole, customLog, standardLogger])
 
     return (
         <NautineProvider
             value={{
                 logger: {
-                    fatal: sendLog('FATAL'),
-                    error: sendLog('ERROR'),
-                    warn: sendLog('WARN'),
-                    info: sendLog('INFO'),
-                    debug: sendLog('DEBUG'),
-                    trace: sendLog('TRACE'),
+                    fatal: sendLogToNetwork('FATAL'),
+                    error: sendLogToNetwork('ERROR'),
+                    warn: sendLogToNetwork('WARN'),
+                    info: sendLogToNetwork('INFO'),
+                    debug: sendLogToNetwork('DEBUG'),
+                    trace: sendLogToNetwork('TRACE'),
                 },
-                overrideConsole,
             }}
         >
             <NautineErrorBoundary fallback={errorFallback}>{children}</NautineErrorBoundary>
         </NautineProvider>
-    )
-}
-
-export const NautineLogger: React.FC<NautineLoggerProps> = (props) => {
-    return (
-        <Provider url="http://localhost:8080/api" options={{ cachePolicy: CachePolicies.NO_CACHE }}>
-            <Nautine {...props} />
-        </Provider>
     )
 }
 

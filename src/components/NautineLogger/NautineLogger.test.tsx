@@ -21,6 +21,6 @@ test('should wrap children correctly', () => {
         </NautineLogger>,
     )
 
-    expect(screen.getByText('Child #1')).toBeInTheDocument()
-    expect(screen.getByText('Child #2')).toBeInTheDocument()
+    expect(screen.queryByText('Child #1')).toBeInTheDocument()
+    expect(screen.queryByText('Child #2')).toBeInTheDocument()
 })

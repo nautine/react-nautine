@@ -15,10 +15,14 @@ const AppWithLogger: React.FC = () => {
             apiKey={apiKey}
             environmentId={environmentId}
             projectId={projectId}
-            name="my-dummy-project"
-            overrideConsole={true}
+            level="TRACE"
             verbose={true}
-            errorFallback={<span>Error...</span>}
+            errorFallback={(resetBoundary) => (
+                <div style={{ display: 'flex', flexDirection: 'column' }}>
+                    <span>Error...</span>
+                    <button onClick={resetBoundary}>Reset</button>
+                </div>
+            )}
         >
             <App />
         </NautineLogger>
