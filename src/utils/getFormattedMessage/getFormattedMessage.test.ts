@@ -12,22 +12,33 @@ describe('getFormattedMessage()', () => {
     })
 
     test('return value should contain the current date', () => {
-        expect(getFormattedMessage('DEBUG', 'custom-category', 'message')).toContain('[2019-04-07 10:20:30.500]')
+        expect(getFormattedMessage('DEBUG', 'custom-category', 'custom-type', 'message')).toContain(
+            '[2019-04-07 10:20:30.500]',
+        )
     })
 
     test('return value should contain provided log severity', () => {
-        expect(getFormattedMessage('DEBUG', undefined, 'message')).toContain('DEBUG')
-        expect(getFormattedMessage('WARN', undefined, 'message')).toContain('WARN')
-        expect(getFormattedMessage('INFO', undefined, 'message')).toContain('INFO')
+        expect(getFormattedMessage('DEBUG', undefined, undefined, 'message')).toContain('DEBUG')
+        expect(getFormattedMessage('WARN', undefined, undefined, 'message')).toContain('WARN')
+        expect(getFormattedMessage('INFO', undefined, undefined, 'message')).toContain('INFO')
     })
 
     test('return value should contain "default" category if nothing was provided', () => {
-        expect(getFormattedMessage('DEBUG', undefined, 'message')).toContain('[default]')
+        expect(getFormattedMessage('DEBUG', undefined, undefined, 'message')).toContain('[default]')
     })
 
     test('return value should contain provided category', () => {
         const category = 'custom-category'
-        expect(getFormattedMessage('DEBUG', category, 'message')).toContain(`[${category}]`)
+        expect(getFormattedMessage('DEBUG', category, undefined, 'message')).toContain(`[${category}]`)
+    })
+
+    test('return value should contain "system" type if nothing was provided', () => {
+        expect(getFormattedMessage('DEBUG', undefined, undefined, 'message')).toContain('[system]')
+    })
+
+    test('return value should contain provided type', () => {
+        const type = 'user'
+        expect(getFormattedMessage('DEBUG', undefined, type, 'message')).toContain(`[${type}]`)
     })
 
     test('return value should "No message" if no actual log message was provided', () => {
@@ -37,6 +48,6 @@ describe('getFormattedMessage()', () => {
     test('return value should contain provided log message', () => {
         const actualLogMessage = 'Log message'
 
-        expect(getFormattedMessage('DEBUG', undefined, actualLogMessage)).toContain(`- ${actualLogMessage}`)
+        expect(getFormattedMessage('DEBUG', undefined, undefined, actualLogMessage)).toContain(`- ${actualLogMessage}`)
     })
 })

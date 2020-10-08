@@ -19,20 +19,19 @@
         "react",
         "react-js",
         "react-native",
-        "third-party"
+        "third-party",
+        "nautine"
     ],
     "scripts": {
         "build": "microbundle-crl --no-compress --format modern,cjs",
         "start": "microbundle-crl watch --no-compress --format modern,cjs",
-        "prepare": "run-s test && run-s build",
+        "prepare": "run-s test",
         "lint:verbose": "eslint src/**/*.{ts,tsx} --fix",
         "test": "run-s test:unit test:lint test:build",
         "test:build": "run-s build",
         "test:unit": "TZ=UTC cross-env CI=1 react-scripts test --env=jsdom --silent",
         "test:lint": "yarn lint:verbose --quiet",
-        "test:watch": "react-scripts test --env=jsdom",
-        "predeploy": "cd example && yarn install && yarn run build",
-        "deploy": "gh-pages -d example/build"
+        "test:watch": "react-scripts test --env=jsdom"
     },
     "peerDependencies": {
         "react": "^16.0.0"
@@ -73,7 +72,9 @@
     ],
     "dependencies": {
         "@testing-library/dom": "5",
+        "axios": "^0.20.0",
         "date-fns": "^2.16.1",
+        "stacktrace-js": "^2.0.2",
         "tiny-warning": "^1.0.3",
         "use-http": "^1.0.15"
     },

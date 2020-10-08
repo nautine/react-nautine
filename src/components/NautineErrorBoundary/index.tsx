@@ -1,4 +1,5 @@
-import { Component, ErrorInfo } from 'react'
+import { Component } from 'react'
+import StackTrace from 'stacktrace-js'
 import { NautineContext } from '../../context'
 import { NautineContextProps } from '../../types'
 
@@ -23,10 +24,11 @@ export class NautineErrorBoundary extends Component<NautineErrorBoundaryProps, N
         return { hasError: true }
     }
 
-    componentDidCatch(error: Error, errorInfo: ErrorInfo): void {
+    async componentDidCatch(error: Error): Promise<void> {
         const { logger }: NautineContextProps = this.context
+        const errorFrames = await StackTrace.fromError(error)
 
-        logger.fatal(`${error.message} ${errorInfo.componentStack}`)
+        logger.fatal(errorFrames, 'exception', 'internal')
     }
 
     render(): React.ReactNode {

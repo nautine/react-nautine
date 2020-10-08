@@ -1,16 +1,7 @@
 // Source: https://www.tutorialspoint.com/log4j/log4j_logging_levels.htm
 export type LogSeverity = 'FATAL' | 'ERROR' | 'WARN' | 'INFO' | 'DEBUG' | 'TRACE'
 
-export const SeverityPriority: Record<number, LogSeverity> = {
-    0: 'FATAL',
-    1: 'ERROR',
-    2: 'WARN',
-    3: 'INFO',
-    4: 'DEBUG',
-    5: 'TRACE',
-}
-
-export enum SeverityPrio {
+export enum SeverityPriority {
     TRACE,
     DEBUG,
     INFO,
@@ -30,7 +21,7 @@ export interface Log {
     message: LogMessage
 }
 
-export type LoggerFunction = (log: LogMessage | unknown) => Promise<void>
+export type LoggerFunction = (log: LogMessage | unknown, category?: string, type?: string) => Promise<void>
 
 export interface NautineLogger {
     fatal: LoggerFunction

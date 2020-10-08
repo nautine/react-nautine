@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import useFetch, { CachePolicies, Provider } from 'use-http'
 import { NautineProvider } from '../../context'
-import { LogSeverity, SeverityPrio } from '../../types'
+import { LogSeverity, SeverityPriority } from '../../types'
 import { getFormattedMessage } from '../../utils'
 import { NautineErrorBoundary } from '../NautineErrorBoundary'
 
@@ -39,7 +39,7 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
      * @returns Promise with the result of log upload
      */
     const sendLog = React.useCallback(
-        (severity: LogSeverity) => async (message: unknown, silent?: boolean) => {
+        (severity: LogSeverity) => async (message: unknown, category?: string, type?: string, silent?: boolean) => {
             if (verbose && !silent) {
                 const loggable = [name, JSON.stringify(message)].filter((value) => !!value)
 
@@ -60,7 +60,7 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
                         log = standardLogger.info
                 }
 
-                if (level && SeverityPrio[level] <= SeverityPrio[severity] && log) {
+                if (level && SeverityPriority[level] <= SeverityPriority[severity] && log) {
                     log(...loggable)
                 }
             }
@@ -70,7 +70,14 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
                     environmentId,
                     projectId,
                     severity,
-                    message: { message: getFormattedMessage(severity, name, JSON.stringify(message)) },
+                    message: {
+                        message: getFormattedMessage(
+                            severity,
+                            category,
+                            type,
+                            typeof message === 'object' ? JSON.stringify(message) : String(message),
+                        ),
+                    },
                 })
             } catch (error) {
                 return Promise.reject(error)
@@ -87,15 +94,19 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
      * @param standardLogFunction - Standard log function to use for console logging
      */
     const customLog = useCallback(
-        (severity: LogSeverity, standardLogFunction: (params?: unknown) => void) => async (...data: Array<unknown>) => {
+        (severity: LogSeverity, standardLogFunction: (params?: unknown) => void) => async (
+            data: unknown,
+            category?: string,
+            type?: string,
+        ) => {
             if (verbose) {
-                const loggable = [name, ...data].filter((value) => !!value)
+                const loggable = [name, data].filter((value) => !!value)
 
                 standardLogFunction(...loggable)
             }
 
             try {
-                await sendLog(severity)(data, true)
+                await sendLog(severity)(data, category, type, true)
             } catch (error) {
                 console.error(error)
             }
