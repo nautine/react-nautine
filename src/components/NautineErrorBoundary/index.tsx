@@ -31,11 +31,22 @@ export class NautineErrorBoundary extends Component<NautineErrorBoundaryProps, N
         logger.fatal(errorFrames, 'exception', 'internal')
     }
 
+    resetBoundary(): void {
+        this.setState({
+            hasError: false,
+        })
+    }
+
     render(): React.ReactNode {
         const { children, fallback } = this.props
         const { hasError } = this.state
 
-        return hasError && fallback ? fallback : children
+        // eslint-disable-next-line
+        return hasError && fallback
+            ? typeof fallback === 'function'
+                ? fallback(this.resetBoundary.bind(this))
+                : fallback
+            : children
     }
 }
 

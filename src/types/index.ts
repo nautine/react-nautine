@@ -21,7 +21,7 @@ export interface Log {
     message: LogMessage
 }
 
-export type LoggerFunction = (log: LogMessage | unknown, category?: string, type?: string) => Promise<void>
+export type LoggerFunction = (log: LogMessage | unknown, category?: string, type?: string) => any
 
 export interface NautineLogger {
     fatal: LoggerFunction
@@ -34,5 +34,4 @@ export interface NautineLogger {
 
 export interface NautineContextProps {
     logger: NautineLogger
-    readonly overrideConsole?: boolean
 }

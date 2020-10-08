@@ -30,9 +30,7 @@ ReactDOM.render(
     apiKey="fee8af9eac884187960b868dea77f9e9"
     environmentId="d883d84e4efb4a58bcacc7e6200031bd"
     projectId="b0e8b4f74b824f18b6f8914b195d1dcd"
-    name="my-dummy-project"
     level="ERROR"
-    overrideConsole={true}
     verbose={true}
     errorFallback={<MyFallbackComponent />}
   >
@@ -60,25 +58,17 @@ Required. This is the identifier of the environment for which the API key was ge
 
 Required. This is the identifier of the project to which the environment belongs to.
 
-`name: string`
-
-Optional. This name will appear in log messages if provided.
-
 `level: string`
 
 Optional. By default Nautine doesn't log anything to the console. To enable logging to the console, set this level (please refer to the example).
-
-`overrideConsole: boolean`
-
-Optional. Overrides console's info, log, warn and error functions and sends all existing logged statements to the Nautine service.
 
 `verbose: boolean`
 
 Optional. Prints log messages to the console as well if it's true. Useful when the application is deployed to test environments.
 
-`errorFallback: React.ReactNode`
+`errorFallback: React.ReactNode | ((resetBoundary: () => void) => React.ReactNode)`
 
-Optional. Fallback component to render when an error is being caught by the internal Error Boundary.
+Optional. Fallback component or function with a return value of a React component to render when an error is being caught by the internal Error Boundary.
 
 ## License
 MIT © [Nautine](https://github.com/nautine)
