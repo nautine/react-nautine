@@ -58,7 +58,6 @@
         "eslint-plugin-prettier": "^3.1.4",
         "eslint-plugin-react": "^7.20.0",
         "eslint-plugin-react-hooks": "4.0.0",
-        "gh-pages": "^2.2.0",
         "husky": ">=4",
         "lint-staged": ">=10",
         "microbundle-crl": "^0.13.10",
@@ -73,8 +72,8 @@
         "build"
     ],
     "dependencies": {
+        "@testing-library/dom": "5",
         "date-fns": "^2.16.1",
-        "stacktrace-js": "^2.0.2",
         "tiny-warning": "^1.0.3",
         "use-http": "^1.0.15"
     },
