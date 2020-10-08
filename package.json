@@ -1,6 +1,6 @@
 {
     "name": "@nautine/react-nautine",
-    "version": "1.0.0",
+    "version": "1.0.1",
     "description": "React component for Nautine Logger services.",
     "author": "Szilard Doro <doroszilard@gmail.com>",
     "license": "MIT",
