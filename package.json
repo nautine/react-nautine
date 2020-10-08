@@ -74,6 +74,7 @@
     ],
     "dependencies": {
         "date-fns": "^2.16.1",
+        "stacktrace-js": "^2.0.2",
         "tiny-warning": "^1.0.3",
         "use-http": "^1.0.15"
     },

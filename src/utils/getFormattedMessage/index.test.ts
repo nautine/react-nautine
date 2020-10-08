@@ -11,17 +11,32 @@ describe('getFormattedMessage()', () => {
         global.Date.now = realDate
     })
 
-    test('formatted message contains log severity', () => {
-        expect(getFormattedMessage('DEBUG', 'message')).toContain('DEBUG')
+    test('return value should contain the current date', () => {
+        expect(getFormattedMessage('DEBUG', 'custom-category', 'message')).toContain('[2019-04-07 10:20:30.500]')
     })
 
-    test('formatted message contains the actual log message', () => {
+    test('return value should contain provided log severity', () => {
+        expect(getFormattedMessage('DEBUG', undefined, 'message')).toContain('DEBUG')
+        expect(getFormattedMessage('WARN', undefined, 'message')).toContain('WARN')
+        expect(getFormattedMessage('INFO', undefined, 'message')).toContain('INFO')
+    })
+
+    test('return value should contain "default" category if nothing was provided', () => {
+        expect(getFormattedMessage('DEBUG', undefined, 'message')).toContain('[default]')
+    })
+
+    test('return value should contain provided category', () => {
+        const category = 'custom-category'
+        expect(getFormattedMessage('DEBUG', category, 'message')).toContain(`[${category}]`)
+    })
+
+    test('return value should "No message" if no actual log message was provided', () => {
+        expect(getFormattedMessage('DEBUG')).toContain(`- No message`)
+    })
+
+    test('return value should contain provided log message', () => {
         const actualLogMessage = 'Log message'
 
-        expect(getFormattedMessage('DEBUG', actualLogMessage)).toContain(actualLogMessage)
-    })
-
-    test('shows "No message" if no actual log message was provided', () => {
-        expect(getFormattedMessage('DEBUG')).toContain('No message')
+        expect(getFormattedMessage('DEBUG', undefined, actualLogMessage)).toContain(`- ${actualLogMessage}`)
     })
 })

@@ -1,7 +1,7 @@
 import React, { useCallback, useEffect, useState } from 'react'
 import useFetch, { CachePolicies, Provider } from 'use-http'
 import { NautineProvider } from '../../context'
-import { LogSeverity } from '../../types'
+import { LogSeverity, SeverityPrio } from '../../types'
 import { getFormattedMessage } from '../../utils'
 import { NautineErrorBoundary } from '../NautineErrorBoundary'
 
@@ -10,17 +10,19 @@ export interface NautineLoggerProps {
     environmentId: string
     projectId: string
     name?: string
+    level?: LogSeverity
     overrideConsole?: boolean
     verbose?: boolean
     errorFallback?: React.ReactNode
 }
 
 export const Nautine: React.FC<NautineLoggerProps> = ({
+    apiKey,
     environmentId,
     projectId,
-    overrideConsole,
     name,
-    apiKey,
+    level,
+    overrideConsole,
     verbose,
     children,
     errorFallback,
@@ -39,19 +41,42 @@ export const Nautine: React.FC<NautineLoggerProps> = ({
     const sendLog = React.useCallback(
         (severity: LogSeverity) => async (message: unknown, silent?: boolean) => {
             if (verbose && !silent) {
-                const loggable = [name, message].filter((value) => !!value)
+                const loggable = [name, JSON.stringify(message)].filter((value) => !!value)
 
-                standardLogger.log(...loggable)
+                let log
+
+                switch (severity) {
+                    case 'FATAL':
+                    case 'ERROR':
+                        log = standardLogger.error
+                        break
+                    case 'WARN':
+                        log = standardLogger.warn
+                        break
+                    case 'TRACE':
+                        log = standardLogger.log
+                        break
+                    default:
+                        log = standardLogger.info
+                }
+
+                if (level && SeverityPrio[level] <= SeverityPrio[severity] && log) {
+                    log(...loggable)
+                }
             }
 
-            return request.post({
-                environmentId,
-                projectId,
-                severity,
-                message: { message: getFormattedMessage(severity, JSON.stringify(message)) },
-            })
+            try {
+                return request.post({
+                    environmentId,
+                    projectId,
+                    severity,
+                    message: { message: getFormattedMessage(severity, name, JSON.stringify(message)) },
+                })
+            } catch (error) {
+                return Promise.reject(error)
+            }
         },
-        [standardLogger, environmentId, projectId, request, name, verbose],
+        [standardLogger, environmentId, projectId, request, name, verbose, level],
     )
 
     /**

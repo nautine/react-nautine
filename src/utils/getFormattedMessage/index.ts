@@ -5,14 +5,17 @@ import { LogSeverity } from '../../types'
  * Returns the log message with timestamps and correct log message structure.
  *
  * @param severity - Log severity
- * @param message - Log message
+ * @param category - Custom log category, falls back to "default" if not provided
+ * @param message - Log message, falls back to "No message" if not provided
+ * @returns Standardized log message
  */
-export const getFormattedMessage: (severity: LogSeverity, message?: string) => string = (severity, message) => {
-    const stack = 'internal'
-
-    return `${format(Date.now(), 'yyyy-MM-dd HH:mm:ss.SSS')}  ${severity} --- ${stack
-        .padEnd(20, ' ')
-        .substr(0, 20)} : ${message || 'No message'}`
-}
+export const getFormattedMessage: (severity: LogSeverity, category?: string, message?: string) => string = (
+    severity,
+    category,
+    message,
+) =>
+    `[${format(Date.now(), 'yyyy-MM-dd HH:mm:ss.SSS')}] [${severity}] [${category || 'default'}] - ${
+        message || 'No message'
+    }`
 
 export default getFormattedMessage

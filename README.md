@@ -31,6 +31,7 @@ ReactDOM.render(
     environmentId="d883d84e4efb4a58bcacc7e6200031bd"
     projectId="b0e8b4f74b824f18b6f8914b195d1dcd"
     name="my-dummy-project"
+    level="ERROR"
     overrideConsole={true}
     verbose={true}
     errorFallback={<MyFallbackComponent />}
@@ -62,6 +63,10 @@ Required. This is the identifier of the project to which the environment belongs
 `name: string`
 
 Optional. This name will appear in log messages if provided.
+
+`level: string`
+
+Optional. By default Nautine doesn't log anything to the console. To enable logging to the console, set this level (please refer to the example).
 
 `overrideConsole: boolean`
 
